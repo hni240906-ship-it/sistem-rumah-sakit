@@ -3,7 +3,17 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Health-Agent-Core (HAC)</title>
+    
+    <!-- SEO & Metadata -->
+    <title>Health-Agent-Core | Multi-Agent Hospital System</title>
+    <meta name="description" content="A multi-agent hospital information system powered by Google Gemini. Orchestrates patient management, records, and finance through an intelligent coordinator." />
+    <meta name="theme-color" content="#2563EB" />
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Health-Agent-Core (HAC)" />
+    <meta property="og:description" content="AI-powered Hospital Coordinator System using Gemini 2.0 Flash." />
+    
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
@@ -24,6 +34,15 @@
       }
       ::-webkit-scrollbar-thumb:hover {
         background: #94a3b8;
+      }
+      
+      .animate-fade-in {
+        animation: fadeIn 0.5s ease-out forwards;
+      }
+      
+      @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
       }
     </style>
   <script type="importmap">
