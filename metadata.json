@@ -1,0 +1,7 @@
+{
+  "name": "Copy of Health-Agent-Core (HAC)",
+  "description": "A multi-agent hospital information system powered by Gemini. It orchestrates patient management, medical records, staff coordination, and financial operations through a central intelligent coordinator.",
+  "requestFramePermissions": [
+    "microphone"
+  ]
+}
