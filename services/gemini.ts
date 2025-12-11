@@ -1,15 +1,5 @@
-import { GoogleGenAI, Type } from "@google/genai";
+import { GoogleGenAI } from "@google/genai";
 import { AgentResponseSchema, AgentType } from "../types";
-
-// Helper to get API key safely
-const getApiKey = (): string => {
-  const key = process.env.API_KEY;
-  if (!key) {
-    console.error("API_KEY is missing from environment variables.");
-    return "";
-  }
-  return key;
-};
 
 const SYSTEM_INSTRUCTION = `
 You are the Health-Agent-Core (HAC), an advanced multi-agent system for hospital operations.
@@ -44,10 +34,8 @@ You MUST return a JSON object strictly adhering to this schema:
 export const sendMessageToGemini = async (
   prompt: string
 ): Promise<AgentResponseSchema | null> => {
-  const apiKey = getApiKey();
-  if (!apiKey) return null;
-
-  const ai = new GoogleGenAI({ apiKey });
+  // Use process.env.API_KEY directly as per guidelines
+  const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
 
   try {
     const response = await ai.models.generateContent({
@@ -56,39 +44,16 @@ export const sendMessageToGemini = async (
       config: {
         systemInstruction: SYSTEM_INSTRUCTION,
         tools: [{ googleSearch: {} }],
-        responseMimeType: "application/json",
-        responseSchema: {
-          type: Type.OBJECT,
-          properties: {
-            coordinator_thought: { type: Type.STRING },
-            target_agent: {
-              type: Type.STRING,
-              enum: [
-                AgentType.PATIENT_MGMT,
-                AgentType.MEDICAL_RECORDS,
-                AgentType.STAFF_MGMT,
-                AgentType.BILLING_FINANCE,
-              ],
-            },
-            response_content: { type: Type.STRING },
-            generated_document: {
-              type: Type.OBJECT,
-              properties: {
-                type: { type: Type.STRING, enum: ["pdf", "docx", "xlsx", "pptx"] },
-                title: { type: Type.STRING },
-              },
-              nullable: true,
-            },
-          },
-          required: ["coordinator_thought", "target_agent", "response_content"],
-        },
+        // responseMimeType and responseSchema are not compatible with googleSearch tools
       },
     });
 
     const text = response.text;
     if (!text) return null;
 
-    const data = JSON.parse(text) as AgentResponseSchema;
+    // Remove markdown code blocks if present to ensure JSON parsing
+    const cleanText = text.replace(/```json|```/g, '').trim();
+    const data = JSON.parse(cleanText) as AgentResponseSchema;
 
     // extract grounding if available
     if (response.candidates?.[0]?.groundingMetadata?.groundingChunks) {
